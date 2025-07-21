@@ -55,6 +55,15 @@ AUTHORITIES.append({
     'dynamic': True,
 })
 
+AUTHORITIES.append({
+    'name': 'W3C PDF Test',
+    'country': 'Testland',
+    'base_url': 'https://www.w3.org',
+    'docs_page': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': False,
+})
+
 OUTPUT_DIR = 'documents'
 METADATA_FILE = 'documents/metadata.csv'
 
