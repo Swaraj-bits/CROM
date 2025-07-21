@@ -32,13 +32,27 @@ AUTHORITIES.append({
     'dynamic': True,  # Mark as dynamic
 })
 
+# Remove the previous CASA entry if present
+AUTHORITIES = [a for a in AUTHORITIES if a.get('name') != 'CASA' or a.get('country') != 'Australia']
+
+# Add CASA CAR rules page
 AUTHORITIES.append({
-    'name': 'CASA',
+    'name': 'CASA CAR',
     'country': 'Australia',
     'base_url': 'https://www.casa.gov.au',
-    'docs_page': 'https://www.casa.gov.au/search-centre/legislation',
+    'docs_page': 'https://www.casa.gov.au/search-centre/rules?search_api_fulltext=&field_dt_published%5Bmin%5D=&field_dt_published%5Bmax%5D=&sort_by=title&sort_order=ASC&field_rule_type%5B%5D=CAR',
     'doc_link_selector': 'a[href$=".pdf"]',
-    'dynamic': True,  # CASA uses dynamic content loading
+    'dynamic': True,
+})
+
+# Add CASA CASR rules page
+AUTHORITIES.append({
+    'name': 'CASA CASR',
+    'country': 'Australia',
+    'base_url': 'https://www.casa.gov.au',
+    'docs_page': 'https://www.casa.gov.au/search-centre/rules?search_api_fulltext=&field_dt_published%5Bmin%5D=&field_dt_published%5Bmax%5D=&sort_by=title&sort_order=ASC&field_rule_type%5B%5D=CASR',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': True,
 })
 
 OUTPUT_DIR = 'documents'
