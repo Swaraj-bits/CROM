@@ -67,6 +67,12 @@ def append_metadata(country, authority, doc_name, doc_url):
             datetime.utcnow().isoformat()
         ])
 
+def notify_non_responsive(authority, error_msg):
+    msg = f"[NOTIFY] {authority['name']} ({authority['country']}): {error_msg}"
+    print(msg)
+    logging.error(msg)
+
+# Update fetch_and_store_documents to use notify_non_responsive
 
 def fetch_and_store_documents(authority):
     print(f"Scraping {authority['name']} ({authority['country']})...")
@@ -80,10 +86,14 @@ def fetch_and_store_documents(authority):
             options.add_argument('--headless')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-            driver = webdriver.Chrome(options=options)
-            driver.get(authority['docs_page'])
-            time.sleep(3)  # Wait for JS to load
-            links = driver.find_elements(By.CSS_SELECTOR, authority['doc_link_selector'])
+            try:
+                driver = webdriver.Chrome(options=options)
+                driver.get(authority['docs_page'])
+                time.sleep(3)  # Wait for JS to load
+                links = driver.find_elements(By.CSS_SELECTOR, authority['doc_link_selector'])
+            except Exception as e:
+                notify_non_responsive(authority, f"Webpage not functional or Selenium error: {e}")
+                return
             for link in links:
                 doc_url = link.get_attribute('href')
                 doc_name = doc_url.split('/')[-1]
@@ -96,15 +106,20 @@ def fetch_and_store_documents(authority):
                             f.write(doc_resp.content)
                         append_metadata(authority['country'], authority['name'], doc_name, doc_url)
                     except Exception as e:
-                        logging.error(f"Failed to download {doc_url}: {e}")
+                        notify_non_responsive(authority, f"Failed to download {doc_url}: {e}")
                 else:
                     print(f"  Skipping {doc_name}, already downloaded.")
             driver.quit()
         else:
             # Use requests+BeautifulSoup for static sites
-            response = requests.get(authority['docs_page'])
-            soup = BeautifulSoup(response.text, 'html.parser')
-            links = soup.select(authority['doc_link_selector'])
+            try:
+                response = requests.get(authority['docs_page'], timeout=10)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
+                links = soup.select(authority['doc_link_selector'])
+            except Exception as e:
+                notify_non_responsive(authority, f"Webpage not functional or request error: {e}")
+                return
             for link in links:
                 doc_url = urljoin(authority['base_url'], link['href'])
                 doc_name = link['href'].split('/')[-1]
@@ -117,11 +132,11 @@ def fetch_and_store_documents(authority):
                             f.write(doc_resp.content)
                         append_metadata(authority['country'], authority['name'], doc_name, doc_url)
                     except Exception as e:
-                        logging.error(f"Failed to download {doc_url}: {e}")
+                        notify_non_responsive(authority, f"Failed to download {doc_url}: {e}")
                 else:
                     print(f"  Skipping {doc_name}, already downloaded.")
     except Exception as e:
-        logging.error(f"Failed to scrape {authority['name']} ({authority['country']}): {e}")
+        notify_non_responsive(authority, f"General scraping failure: {e}")
 
 
 def main():
