@@ -30,6 +30,15 @@ AUTHORITIES.append({
     'dynamic': True,  # Mark as dynamic
 })
 
+AUTHORITIES.append({
+    'name': 'CASA',
+    'country': 'Australia',
+    'base_url': 'https://www.casa.gov.au',
+    'docs_page': 'https://www.casa.gov.au/search-centre/legislation',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': True,  # CASA uses dynamic content loading
+})
+
 OUTPUT_DIR = 'documents'
 
 
