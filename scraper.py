@@ -42,6 +42,7 @@ AUTHORITIES.append({
 })
 
 OUTPUT_DIR = 'documents'
+METADATA_FILE = 'documents/metadata.csv'
 
 
 def ensure_dir(path):

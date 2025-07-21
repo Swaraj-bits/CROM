@@ -1,0 +1,31 @@
+2025-07-21 08:54:00,072 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: chrome=138.0.7204.157)
+Stacktrace:
+#0 0x55d984f447da <unknown>
+#1 0x55d9849e92e0 <unknown>
+#2 0x55d9849e04c1 <unknown>
+#3 0x55d9849d1789 <unknown>
+#4 0x55d9849d34d0 <unknown>
+#5 0x55d9849d1b2e <unknown>
+#6 0x55d9849d149a <unknown>
+#7 0x55d9849d1175 <unknown>
+#8 0x55d9849cefd5 <unknown>
+#9 0x55d9849cf7ba <unknown>
+#10 0x55d9849ec809 <unknown>
+#11 0x55d984a87335 <unknown>
+#12 0x55d984a608b2 <unknown>
+#13 0x55d984a8671c <unknown>
+#14 0x55d984a60683 <unknown>
+#15 0x55d984a2cb5b <unknown>
+#16 0x55d984a2df31 <unknown>
+#17 0x55d984f0972b <unknown>
+#18 0x55d984f0d534 <unknown>
+#19 0x55d984ef0229 <unknown>
+#20 0x55d984f0e0d8 <unknown>
+#21 0x55d984ed461f <unknown>
+#22 0x55d984f31dd8 <unknown>
+#23 0x55d984f31fb6 <unknown>
+#24 0x55d984f43af6 <unknown>
+#25 0x7f5960d9eef1 <unknown>
+#26 0x7f5960e3045c <unknown>
+
