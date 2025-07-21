@@ -7,6 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
+import csv
+from datetime import datetime
 
 # Configuration: Add more authorities as needed
 AUTHORITIES = [
@@ -47,10 +49,30 @@ def ensure_dir(path):
         os.makedirs(path)
 
 
+# Ensure metadata file exists and has headers
+def ensure_metadata_file():
+    if not os.path.exists(METADATA_FILE):
+        with open(METADATA_FILE, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['country', 'authority', 'document_name', 'document_url', 'date_downloaded'])
+
+def append_metadata(country, authority, doc_name, doc_url):
+    with open(METADATA_FILE, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            country,
+            authority,
+            doc_name,
+            doc_url,
+            datetime.utcnow().isoformat()
+        ])
+
+
 def fetch_and_store_documents(authority):
     print(f"Scraping {authority['name']} ({authority['country']})...")
     country_dir = os.path.join(OUTPUT_DIR, authority['country'])
     ensure_dir(country_dir)
+    ensure_metadata_file()
     try:
         if authority.get('dynamic'):
             # Use Selenium for dynamic sites
@@ -72,6 +94,7 @@ def fetch_and_store_documents(authority):
                         doc_resp = requests.get(doc_url)
                         with open(doc_path, 'wb') as f:
                             f.write(doc_resp.content)
+                        append_metadata(authority['country'], authority['name'], doc_name, doc_url)
                     except Exception as e:
                         logging.error(f"Failed to download {doc_url}: {e}")
                 else:
@@ -92,6 +115,7 @@ def fetch_and_store_documents(authority):
                         doc_resp = requests.get(doc_url)
                         with open(doc_path, 'wb') as f:
                             f.write(doc_resp.content)
+                        append_metadata(authority['country'], authority['name'], doc_name, doc_url)
                     except Exception as e:
                         logging.error(f"Failed to download {doc_url}: {e}")
                 else:
