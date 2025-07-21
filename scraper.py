@@ -105,7 +105,12 @@ def fetch_and_store_documents(authority):
                 driver = webdriver.Chrome(options=options)
                 driver.get(authority['docs_page'])
                 time.sleep(3)  # Wait for JS to load
+                # Save page source for debugging
+                debug_file = os.path.join(country_dir, f"{authority['name']}_page_source.html")
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    f.write(driver.page_source)
                 links = driver.find_elements(By.CSS_SELECTOR, authority['doc_link_selector'])
+                print(f"  [DEBUG] Found {len(links)} links with selector '{authority['doc_link_selector']}' on {authority['docs_page']}")
             except Exception as e:
                 notify_non_responsive(authority, f"Webpage not functional or Selenium error: {e}")
                 return
@@ -132,6 +137,7 @@ def fetch_and_store_documents(authority):
                 response.raise_for_status()
                 soup = BeautifulSoup(response.text, 'html.parser')
                 links = soup.select(authority['doc_link_selector'])
+                print(f"  [DEBUG] Found {len(links)} links with selector '{authority['doc_link_selector']}' on {authority['docs_page']}")
             except Exception as e:
                 notify_non_responsive(authority, f"Webpage not functional or request error: {e}")
                 return

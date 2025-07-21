@@ -60,3 +60,6 @@ Stacktrace:
 #25 0x7f7756b37ef1 <unknown>
 #26 0x7f7756bc945c <unknown>
 
+2025-07-21 09:58:17,693 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: Unable to obtain driver for chrome; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location
+
+2025-07-21 09:58:17,728 WARNING:There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
