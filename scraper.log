@@ -1,0 +1,97 @@
+2025-07-21 08:54:00,072 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: chrome=138.0.7204.157)
+Stacktrace:
+#0 0x55d984f447da <unknown>
+#1 0x55d9849e92e0 <unknown>
+#2 0x55d9849e04c1 <unknown>
+#3 0x55d9849d1789 <unknown>
+#4 0x55d9849d34d0 <unknown>
+#5 0x55d9849d1b2e <unknown>
+#6 0x55d9849d149a <unknown>
+#7 0x55d9849d1175 <unknown>
+#8 0x55d9849cefd5 <unknown>
+#9 0x55d9849cf7ba <unknown>
+#10 0x55d9849ec809 <unknown>
+#11 0x55d984a87335 <unknown>
+#12 0x55d984a608b2 <unknown>
+#13 0x55d984a8671c <unknown>
+#14 0x55d984a60683 <unknown>
+#15 0x55d984a2cb5b <unknown>
+#16 0x55d984a2df31 <unknown>
+#17 0x55d984f0972b <unknown>
+#18 0x55d984f0d534 <unknown>
+#19 0x55d984ef0229 <unknown>
+#20 0x55d984f0e0d8 <unknown>
+#21 0x55d984ed461f <unknown>
+#22 0x55d984f31dd8 <unknown>
+#23 0x55d984f31fb6 <unknown>
+#24 0x55d984f43af6 <unknown>
+#25 0x7f5960d9eef1 <unknown>
+#26 0x7f5960e3045c <unknown>
+
+2025-07-21 09:04:44,699 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: chrome=138.0.7204.157)
+Stacktrace:
+#0 0x55e7f791c7da <unknown>
+#1 0x55e7f73c12e0 <unknown>
+#2 0x55e7f73b84c1 <unknown>
+#3 0x55e7f73a9789 <unknown>
+#4 0x55e7f73ab4d0 <unknown>
+#5 0x55e7f73a9b2e <unknown>
+#6 0x55e7f73a949a <unknown>
+#7 0x55e7f73a9175 <unknown>
+#8 0x55e7f73a6fd5 <unknown>
+#9 0x55e7f73a77ba <unknown>
+#10 0x55e7f73c4809 <unknown>
+#11 0x55e7f745f335 <unknown>
+#12 0x55e7f74388b2 <unknown>
+#13 0x55e7f745e71c <unknown>
+#14 0x55e7f7438683 <unknown>
+#15 0x55e7f7404b5b <unknown>
+#16 0x55e7f7405f31 <unknown>
+#17 0x55e7f78e172b <unknown>
+#18 0x55e7f78e5534 <unknown>
+#19 0x55e7f78c8229 <unknown>
+#20 0x55e7f78e60d8 <unknown>
+#21 0x55e7f78ac61f <unknown>
+#22 0x55e7f7909dd8 <unknown>
+#23 0x55e7f7909fb6 <unknown>
+#24 0x55e7f791baf6 <unknown>
+#25 0x7f7756b37ef1 <unknown>
+#26 0x7f7756bc945c <unknown>
+
+2025-07-21 09:58:17,693 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: Unable to obtain driver for chrome; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location
+
+2025-07-21 09:58:17,728 WARNING:There was an error managing chromedriver (error sending request for url (https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json)); using driver found in the cache
+2025-07-21 10:13:20,180 ERROR:[NOTIFY] Sample Dynamic (SampleLand): Webpage not functional or Selenium error: Message: unknown error: net::ERR_NAME_NOT_RESOLVED
+  (Session info: chrome=138.0.7204.157)
+Stacktrace:
+#0 0x5627fd3da7da <unknown>
+#1 0x5627fce7f2e0 <unknown>
+#2 0x5627fce764c1 <unknown>
+#3 0x5627fce67789 <unknown>
+#4 0x5627fce694d0 <unknown>
+#5 0x5627fce67b2e <unknown>
+#6 0x5627fce6749a <unknown>
+#7 0x5627fce67175 <unknown>
+#8 0x5627fce64fd5 <unknown>
+#9 0x5627fce657ba <unknown>
+#10 0x5627fce82809 <unknown>
+#11 0x5627fcf1d335 <unknown>
+#12 0x5627fcef68b2 <unknown>
+#13 0x5627fcf1c71c <unknown>
+#14 0x5627fcef6683 <unknown>
+#15 0x5627fcec2b5b <unknown>
+#16 0x5627fcec3f31 <unknown>
+#17 0x5627fd39f72b <unknown>
+#18 0x5627fd3a3534 <unknown>
+#19 0x5627fd386229 <unknown>
+#20 0x5627fd3a40d8 <unknown>
+#21 0x5627fd36a61f <unknown>
+#22 0x5627fd3c7dd8 <unknown>
+#23 0x5627fd3c7fb6 <unknown>
+#24 0x5627fd3d9af6 <unknown>
+#25 0x7f08bc3cfef1 <unknown>
+#26 0x7f08bc46145c <unknown>
+
+2025-07-21 10:13:28,303 ERROR:[NOTIFY] W3C PDF Test (Testland): Webpage not functional or request error: 403 Client Error: Forbidden for url: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/

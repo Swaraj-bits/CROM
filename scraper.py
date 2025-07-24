@@ -1,0 +1,180 @@
+import os
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import logging
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+import csv
+from datetime import datetime
+
+# Configuration: Add more authorities as needed
+AUTHORITIES = [
+    {
+        'name': 'FAA',
+        'country': 'USA',
+        'base_url': 'https://www.faa.gov/regulations_policies',
+        'docs_page': 'https://www.faa.gov/regulations_policies',
+        'doc_link_selector': 'a[href$=".pdf"]',  # CSS selector for PDF links
+    },
+    # Add more authorities here
+]
+
+# Add a sample dynamic authority
+AUTHORITIES.append({
+    'name': 'Sample Dynamic',
+    'country': 'SampleLand',
+    'base_url': 'https://example-dynamic.com',
+    'docs_page': 'https://example-dynamic.com/docs',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': True,  # Mark as dynamic
+})
+
+# Remove the previous CASA entry if present
+AUTHORITIES = [a for a in AUTHORITIES if a.get('name') != 'CASA' or a.get('country') != 'Australia']
+
+# Add CASA CAR rules page
+AUTHORITIES.append({
+    'name': 'CASA CAR',
+    'country': 'Australia',
+    'base_url': 'https://www.casa.gov.au',
+    'docs_page': 'https://www.casa.gov.au/search-centre/rules?search_api_fulltext=&field_dt_published%5Bmin%5D=&field_dt_published%5Bmax%5D=&sort_by=title&sort_order=ASC&field_rule_type%5B%5D=CAR',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': True,
+})
+
+# Add CASA CASR rules page
+AUTHORITIES.append({
+    'name': 'CASA CASR',
+    'country': 'Australia',
+    'base_url': 'https://www.casa.gov.au',
+    'docs_page': 'https://www.casa.gov.au/search-centre/rules?search_api_fulltext=&field_dt_published%5Bmin%5D=&field_dt_published%5Bmax%5D=&sort_by=title&sort_order=ASC&field_rule_type%5B%5D=CASR',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': True,
+})
+
+AUTHORITIES.append({
+    'name': 'W3C PDF Test',
+    'country': 'Testland',
+    'base_url': 'https://www.w3.org',
+    'docs_page': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/',
+    'doc_link_selector': 'a[href$=".pdf"]',
+    'dynamic': False,
+})
+
+OUTPUT_DIR = 'documents'
+METADATA_FILE = 'documents/metadata.csv'
+
+
+def ensure_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+# Ensure metadata file exists and has headers
+def ensure_metadata_file():
+    if not os.path.exists(METADATA_FILE):
+        with open(METADATA_FILE, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['country', 'authority', 'document_name', 'document_url', 'date_downloaded'])
+
+def append_metadata(country, authority, doc_name, doc_url):
+    with open(METADATA_FILE, 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            country,
+            authority,
+            doc_name,
+            doc_url,
+            datetime.utcnow().isoformat()
+        ])
+
+def notify_non_responsive(authority, error_msg):
+    msg = f"[NOTIFY] {authority['name']} ({authority['country']}): {error_msg}"
+    print(msg)
+    logging.error(msg)
+
+# Update fetch_and_store_documents to use notify_non_responsive
+
+def fetch_and_store_documents(authority):
+    print(f"Scraping {authority['name']} ({authority['country']})...")
+    country_dir = os.path.join(OUTPUT_DIR, authority['country'])
+    ensure_dir(country_dir)
+    ensure_metadata_file()
+    try:
+        if authority.get('dynamic'):
+            # Use Selenium for dynamic sites
+            options = Options()
+            options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            try:
+                driver = webdriver.Chrome(options=options)
+                driver.get(authority['docs_page'])
+                time.sleep(3)  # Wait for JS to load
+                # Save page source for debugging
+                debug_file = os.path.join(country_dir, f"{authority['name']}_page_source.html")
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    f.write(driver.page_source)
+                links = driver.find_elements(By.CSS_SELECTOR, authority['doc_link_selector'])
+                print(f"  [DEBUG] Found {len(links)} links with selector '{authority['doc_link_selector']}' on {authority['docs_page']}")
+            except Exception as e:
+                notify_non_responsive(authority, f"Webpage not functional or Selenium error: {e}")
+                return
+            for link in links:
+                doc_url = link.get_attribute('href')
+                doc_name = doc_url.split('/')[-1]
+                doc_path = os.path.join(country_dir, doc_name)
+                if not os.path.exists(doc_path):
+                    print(f"  Downloading {doc_name}...")
+                    try:
+                        doc_resp = requests.get(doc_url)
+                        with open(doc_path, 'wb') as f:
+                            f.write(doc_resp.content)
+                        append_metadata(authority['country'], authority['name'], doc_name, doc_url)
+                    except Exception as e:
+                        notify_non_responsive(authority, f"Failed to download {doc_url}: {e}")
+                else:
+                    print(f"  Skipping {doc_name}, already downloaded.")
+            driver.quit()
+        else:
+            # Use requests+BeautifulSoup for static sites
+            try:
+                response = requests.get(authority['docs_page'], timeout=10)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
+                links = soup.select(authority['doc_link_selector'])
+                print(f"  [DEBUG] Found {len(links)} links with selector '{authority['doc_link_selector']}' on {authority['docs_page']}")
+            except Exception as e:
+                notify_non_responsive(authority, f"Webpage not functional or request error: {e}")
+                return
+            for link in links:
+                doc_url = urljoin(authority['base_url'], link['href'])
+                doc_name = link['href'].split('/')[-1]
+                doc_path = os.path.join(country_dir, doc_name)
+                if not os.path.exists(doc_path):
+                    print(f"  Downloading {doc_name}...")
+                    try:
+                        doc_resp = requests.get(doc_url)
+                        with open(doc_path, 'wb') as f:
+                            f.write(doc_resp.content)
+                        append_metadata(authority['country'], authority['name'], doc_name, doc_url)
+                    except Exception as e:
+                        notify_non_responsive(authority, f"Failed to download {doc_url}: {e}")
+                else:
+                    print(f"  Skipping {doc_name}, already downloaded.")
+    except Exception as e:
+        notify_non_responsive(authority, f"General scraping failure: {e}")
+
+
+def main():
+    # Setup logging
+    logging.basicConfig(filename='scraper.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
+
+    for authority in AUTHORITIES:
+        fetch_and_store_documents(authority)
+
+if __name__ == '__main__':
+    main()
